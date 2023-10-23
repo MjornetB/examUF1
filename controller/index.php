@@ -3,7 +3,16 @@
 require_once '../model/pdo-articles.php';
 require_once '../controller/session.php';
 
-$postsPerPage = 10;
+if (isset($_GET['postsPerPage'])) {
+    $postsPerPage = $_GET['postsPerPage'];
+    setcookie('postsPerPage', $postsPerPage); 
+  } elseif (isset($_COOKIE['postsPerPage'])) {
+    $postsPerPage = $_COOKIE['postsPerPage']; 
+  } else {
+    $postsPerPage = 10; 
+  } //ex 7.1
+
+// Ex 9 per canviar el temps de sessio anem al php.ini i canviem el session.gc_maxlifetime=1440 default, per session.gc_maxlifetime=900, <?php echo ini_get("session.gc_maxlifetime") <- per comprovar-ho
 
 $orderBy = 'date-desc';
 
@@ -48,4 +57,5 @@ $previousPageLink = $firstPage ? "#" : $searchQuery . "page=" . ($currentPage - 
 $firstPageLink = $firstPage ? "#" : $searchQuery . "page=1";
 $lastPageLink = $lastPage ? "#" : $searchQuery . "page=$nPages";
 
-require_once '../view/index.view.php';
+//require_once '../view/index.view.php';
+include_once '../view/index.view.php'; //Ex 1

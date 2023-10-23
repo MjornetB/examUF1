@@ -254,14 +254,14 @@ function setPostImage($articleId, $imagePath)
  * @param string $link enllaç de l'article
  * @param string $article contingut de l'article
  * 
- * @return string id del nou article
  */
 function createPost($userId, $title, $director, $link, $ytLink, $article)
 {
     try {
+        
         $connexio = getConnection();
-
-        $statement = $connexio->prepare('
+            /*
+        $statement = $connexio->prepare(' // Ex 15
         INSERT INTO posts (title, director, link, youtube_link, synopsis, user_id)
         VALUES (:title, :director, :link, :ytLink, :synopsis, :userId);');
 
@@ -274,6 +274,17 @@ function createPost($userId, $title, $director, $link, $ytLink, $article)
 
         $statement->execute();
         return $connexio->lastInsertId();
+        */
+        
+        $stmt = $connexio->prepare("INSERT INTO posts (title, director, link, youtube_link, synopsis, user_id) VALUES (?, ?, ?, ?, ?, ?)");
+          $stmt->bindParam(1, $title);
+          $stmt->bindParam(2, $director);
+          $stmt->bindParam(3, $link);
+          $stmt->bindParam(4, $ytLink);
+          $stmt->bindParam(5, $article);
+          $stmt->bindParam(6, $userId);
+          $stmt->execute();
+          return $connexio->lastInsertId();
 
     } catch (PDOException $e) {
         die("No es pot establir connexió amb la base de dades");

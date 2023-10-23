@@ -63,7 +63,8 @@ function userExistsByNickname($nickname)
  * 
  * @return string hash MD5
  */
-function getUserHash($email)
+//function getUserHash($email)
+function getUserHash($email, $password)
 {
     try {
         $connexio = getConnection();
@@ -75,8 +76,13 @@ function getUserHash($email)
         $statement->execute();
 
         $result = $statement->fetch();
+        $resultat = $statement->fetch(PDO::FETCH_ASSOC);
 
-        return $result['password'];
+        //return $result['password'];
+        // Si hi han resultats
+            if (password_verify($password, $result['password'])) {
+                return "Correcto";
+            };
     } catch (PDOException $e) {
         die("No es pot establir connexió amb la base de dades");
     }
@@ -188,10 +194,11 @@ function getUserIdByRememberMeToken($rememberMeToken)
  *
  * @param string $email email del nou usuari
  * @param string $nickname nickname del nou usuari
- * @param string $md5Hash hash MD5 del password del nou usuari
+ * @param string $passwordEncriptat hash del password del nou usuari
  * 
  */
-function insertNewUser($email, $nickname, $md5Hash)
+//function insertNewUser($email, $nickname, $md5Hash) Ex 11 canviem els noms perque sigue entendible
+function insertNewUser($email, $nickname, $passwordEncriptat)
 {
     try {
         $connexio = getConnection();
@@ -199,7 +206,8 @@ function insertNewUser($email, $nickname, $md5Hash)
         $statement->execute([
             'email' => $email,
             'nickname' => $nickname,
-            'pass' => $md5Hash
+            //'pass' => $md5Hash
+            'pass' => $passwordEncriptat
         ]);
     } catch (PDOException $e) {
         die("No es pot establir connexió amb la base de dades");
@@ -302,6 +310,57 @@ function setRememberMeToken($userId, $rememberMeToken)
         die("No es pot establir connexió amb la base de dades");
     }
 }
+
+function borrarUsuari($userId){ //Ex 6
+    $connexio = getConnection();
+    $stmt = $connexio->prepare("DELETE FROM users WHERE id = ?");
+    $stmt->bindParam(1, $userId);
+    $stmt->execute();
+}
+
+function checkPass($password, $userId){ //Ex 6
+    try {
+        $connexio = getConnection();
+        $stmt = $connexio->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt->bindParam(1, $userId);
+        $stmt->execute();
+        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($resultat !== false) { // Si hi han resultats
+            if (password_verify($password, $resultat['password'])) {
+                return "Correcto";
+            } else {
+                return "Login incorrecto";
+            }
+        } else {
+            return "Usuario no encontrado";
+        }
+    } catch (PDOException $e) {
+        return "Error al realizar el login: " . $e->getMessage();
+    }
+  }
+
+  function realitzarLogin($email, $password){ //ex 11
+    try {
+        $connexio = getConnection();
+        $stmt = $connexio->prepare("SELECT password FROM users WHERE email = ?");
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
+        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($resultat !== false) { // Si hi han resultats
+            if (password_verify($password, $resultat['password'])) {
+                return "Correcto";
+            } else {
+                return "Login incorrecto";
+            }
+        } else {
+            return "Usuario no encontrado";
+        }
+    } catch (PDOException $e) {
+        return "Error al realizar el login: " . $e->getMessage();
+    }
+  }
 
 /**
  * Neteja el token de recuperació de contrasenya d'un usuari

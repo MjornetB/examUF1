@@ -19,4 +19,5 @@ require_once '../controller/session.php';
     $createActive = $file == "edit" ? "active" : "";
     $passwordActive = $file == "change-password" ? "active" : "";    
 
-    require_once '../view/navbar.view.php';
+    //require_once '../view/navbar.view.php';
+    include_once '../view/navbar.view.php'; //Ex 1

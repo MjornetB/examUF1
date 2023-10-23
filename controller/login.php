@@ -19,7 +19,9 @@ if (isset($_POST['submit'])) {
     onSubmit();
 }
 
-require_once '../view/login.view.php';
+//equire_once '../view/login.view.php';
+include_once '../view/login.view.php'; //Ex 1
+
 
 function onSubmit()
 {
@@ -47,8 +49,7 @@ function onSubmit()
  * @param string $password password
  * 
  */
-function checkUserInput($email, $password)
-{
+function checkUserInput($email, $password){
     global $errors;
 
     checkEmail($email, false);
@@ -62,15 +63,28 @@ function checkUserInput($email, $password)
         $errors['email'] = "This user email doesn't exist.";
         return;
     }
+    $ferLogin = realitzarLogin($email, $password);
 
-    $md5Hash = md5($password);
-    $md5HashDB = getUserHash($email);
+//Si el login es correcte, es crea una sessio i es redirigeix a la pagina webLogada.php
+if ($ferLogin == "Correcto"){ //Ex 11, per comprovar-ho li pasem a l'usuari el pass introduit i el hash retornat.
+    $errors['password'] = "Wrong password.";
+    return;
+}
+}
 
-    if ($md5Hash != $md5HashDB) {
+/*
+    //$md5Hash = md5($password);
+    //$md5HashDB = getUserHash($email);
+    $passHash = getUserHash($email, $password);
+
+    //if ($md5Hash != $md5HashDB) { 
+    if ($passHash == "Correcto"){ 
         $errors['password'] = "Wrong password.";
         return;
     }
 }
+*/
+
 
 /**
  * Inicia sessió a l'usuari i el redirigeix a l'inici

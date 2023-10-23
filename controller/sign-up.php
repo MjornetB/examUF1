@@ -24,7 +24,8 @@ if(isset($_POST['email'])) {
     signup($email, $nickname, $password1, $password2);
 }
 
-require_once '../view/sign-up.view.php';
+//require_once '../view/sign-up.view.php';
+include_once '../view/sign-up.view.php'; //Ex 1
 
 // Funcions
 
@@ -46,8 +47,10 @@ function signup($email, $nickname, $password1, $password2) {
 
     if (!empty($errors)) return;
 
-    $md5Hash = md5($password1);
-    insertNewUser($email, $nickname, $md5Hash);
+    //$md5Hash = md5($password1);
+    //insertNewUser($email, $nickname, $md5Hash); 
+    $passwordEncriptat = password_hash($password1, PASSWORD_BCRYPT); //Ex 11 encriptem
+    insertNewUser($email, $nickname, $passwordEncriptat);
     startSession($email, true);
     redirectHome();
 }

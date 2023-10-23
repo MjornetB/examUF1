@@ -35,6 +35,7 @@
                 <li><a class="dropdown-item $createActive" href="edit.php"><span class="icon-plus"></span> New post</a></li>
                 <li><a class="dropdown-item $passwordActive $changePasswordVisibility" href="change-password.php"><span class="icon-key"></span> Change password</a></li>
                 <li><a class="dropdown-item " href="recovery-password.php"><span class="icon-key"></span> Recovery password</a></li>
+                <li><a class="dropdown-item " href="deleteAccount.php"><span class="icon-key"></span> Delete this user</a></li>
                 <div class="dropdown-divider"></div>
                 <li><a class="dropdown-item" href="clear-session.php"><span class="icon-logout"></span> Log out</a></li>
                 STR;
